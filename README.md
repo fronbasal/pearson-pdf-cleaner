@@ -1,23 +1,24 @@
 # pearson-pdf-cleaner
 
-PDF processing utility that removes Pearson textbook watermarks and metadata overlays to improve document readability.
+A lean, straightforward watermark removal tool for improving legibility of Pearson eLibrary content.
 
-**Removes:**
-- Watermark overlays embedded in PDF marked content blocks
-- Metadata annotations and license text
-- Non-essential document metadata
+**What it does:**
 
-**Preserves:**
-- All book content and text
-- Chapter titles and author information in headers/footers
-- Document structure and formatting
+- Removes `/Artifact` marked content blocks that contain watermarks and overlays
+- Sanitizes document metadata (removes creation/modification dates, producer info)
+- Preserves all book content, structure, and formatting
 
-## Use Cases
+**Limitations:**
 
-- Cleaning PDFs for archival or research purposes
-- Improving readability by removing page overlays
-- Processing batch textbook collections
-- Document processing pipelines
+- This is a simple, "dirty" approach - some PDFs may require manual cleanup
+- Does not attempt to detect watermark type - processes all `/Artifact` blocks uniformly
+- Best results on standard Pearson eLibrary PDFs
+
+## Use cases
+
+- Improving readability of Pearson textbooks by removing watermark overlays
+- Cleaning PDFs for personal archival
+- Batch processing eLibrary content
 
 ## Install
 
@@ -36,28 +37,30 @@ pip install pearson-pdf-cleaner
 ## Usage
 
 ```bash
-pearson-pdf-cleaner [-h] [-v] [--dry-run] <input-file> <output-file>
+pearson-pdf-cleaner [-f] [-v] [--dry-run] <input-file> <output-file>
 ```
+
+Options:
+
+- `-f, --force`: Overwrite output file if it exists
+- `-v, --verbose`: Debug output
+- `--dry-run`: Check if PDF is processable without making changes
 
 Example:
 
 ```bash
 pearson-pdf-cleaner input.pdf output.pdf
-```
-
-Dry run (preview changes without modifying the PDF):
-
-```bash
-pearson-pdf-cleaner --dry-run input.pdf output.pdf
+pearson-pdf-cleaner -f input.pdf output.pdf  # Overwrite if exists
 ```
 
 ## How it works
 
-The utility processes each page by:
+The tool processes each PDF page by:
 
-1. **Removing marked content overlays**: Strips PDF marked content blocks (`/Artifact BMC...EMC`) that contain non-essential text
-2. **Cleaning symbolic font data**: Removes decorative/symbolic font elements 
-3. **Normalizing metadata**: Removes or cleans document-level metadata while preserving document dates and structure
+1. **Removing marked content blocks**: Strips `/Artifact` sections that typically contain watermarks and overlays
+2. **Sanitizing metadata**: Removes creation/modification dates and producer information to avoid traceability
+
+That's it. It's intentionally simple.
 
 ## Development
 
